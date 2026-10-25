@@ -17,8 +17,7 @@ export default async function handler(req, res) {
     return res.status(200).json(cache.data);
   }
 
-  const url =
-    "https://api.football-data.org/v4/matches?competitions=PL,CL,PD" +
+  const url ="https://api.football-data.org/v4/matches?competitions=2021,2001,2014" +
     `&dateFrom=${day(0)}&dateTo=${day(1)}`;
 
   try {
