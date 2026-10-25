@@ -30,7 +30,8 @@ export default async function handler(req, res) {
       return res.status(200).json(cache.data || { matches: [] });
     }
     if (!r.ok) {
-      return res.status(502).json({ error: "Football API error", status: r.status });
+    const detail = await r.text();
+return res.status(502).json({ error: "Football API error", status: r.status, detail });
     }
 
     const raw = await r.json();
