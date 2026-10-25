@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matchday – Scores and highlights</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap">
+<style>
+:root{--bg:#EEF2EC;--card:#fff;--ink:#12261C;--mute:#5F7266;--line:#DCE4DC;--g1:#1F7A4D;--g2:#1A6C44;--live:#D62839;--chip:#E1E9E1;--btn:#12261C;--btnt:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0B1510;--card:#14231A;--ink:#EAF3EC;--mute:#8FA596;--line:#21372A;--g1:#17613C;--g2:#145735;--live:#FF6B78;--chip:#1B2F23;--btn:#EAF3EC;--btnt:#0B1510}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Barlow,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.4}
+main{max-width:760px;margin:0 auto;padding:18px 14px 56px}
+.top{display:flex;justify-content:space-between;align-items:baseline}
+h1{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:34px;margin:0;letter-spacing:.01em}
+#date{color:var(--mute);font-size:14px}
+.hero{position:relative;overflow:hidden;margin-top:14px;border-radius:18px;padding:22px 16px 20px;color:#fff;text-align:center;background:repeating-linear-gradient(90deg,var(--g1) 0 56px,var(--g2) 56px 112px)}
+.hero::before{content:"";position:absolute;left:50%;top:50%;width:230px;height:230px;margin:-115px 0 0 -115px;border:2px solid rgba(255,255,255,.28);border-radius:50%}
+.hero::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(255,255,255,.28)}
+.hero>*{position:relative;z-index:1}
+.kicker{display:inline-block;background:rgba(0,0,0,.35);padding:4px 12px;border-radius:999px;font-size:14px}
+.kicker.live{background:var(--live)}
+.hteams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:16px 0 10px}
+.hteam{display:flex;flex-direction:column;align-items:center;gap:8px;font-family:"Barlow Condensed",Impact,sans-serif;font-size:24px;font-weight:700;line-height:1.1}
+.hmid{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:54px;line-height:1;min-width:110px;font-variant-numeric:tabular-nums}
+.hmid.ns{font-size:38px}
+.sub{font-size:15px;opacity:.92}
+.badge{width:46px;height:46px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font:700 15px "Barlow Condensed",Impact,sans-serif;letter-spacing:.04em;flex:none;border:2px solid rgba(255,255,255,.75)}
+.hero .badge{width:64px;height:64px;font-size:20px}
+.tabs{display:flex;gap:8px;margin:20px 0 4px;overflow-x:auto;padding-bottom:4px}
+.tabs button{flex:none;border:0;border-radius:999px;padding:9px 18px;background:var(--chip);color:var(--ink);font:500 15px Barlow,system-ui,sans-serif;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--btn);color:var(--btnt)}
+.tabs button:focus-visible,.hl:focus-visible{outline:3px solid var(--g1);outline-offset:2px}
+.league{margin-top:22px}
+.league h2{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:22px;margin:0 0 8px}
+.match{display:grid;grid-template-columns:54px 1fr auto 1fr;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;padding:12px}
+.match .badge{width:34px;height:34px;font-size:12px;border:0}
+.team{display:flex;align-items:center;gap:8px;font-weight:500;min-width:0}
+.team.home{flex-direction:row-reverse;text-align:right}
+.team span.n{overflow-wrap:anywhere}
+.status{font-size:13px;color:var(--mute)}
+.status.live{color:var(--live);font-weight:500}
+.status.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--live);margin-right:5px;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.status.live::before{animation:none}}
+.score{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:26px;min-width:64px;text-align:center;font-variant-numeric:tabular-nums}
+.score.ns{font-size:17px;color:var(--mute);font-weight:600}
+.hlrow{grid-column:1/-1;margin-top:2px}
+.hl{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:var(--g1);color:#fff;font-weight:500;font-size:14px;text-decoration:none}
+.msg{color:var(--mute);padding:24px 0;text-align:center}
+#note{margin-top:26px;color:var(--mute);font-size:13px;text-align:center}
+@media (max-width:440px){.match{grid-template-columns:44px 1fr auto 1fr;gap:6px;padding:10px 8px}.match .badge{width:28px;height:28px;font-size:10px}.hmid{font-size:44px;min-width:90px}.hteam{font-size:20px}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><h1>Matchday</h1><span id="date"></span></div>
+<section class="hero" id="hero" aria-live="polite"><p class="sub">Loading the featured match…</p></section>
+<nav class="tabs" id="tabs" aria-label="Leagues"></nav>
+<div id="list"><p class="msg">Loading matches…</p></div>
+<p id="note"></p>
+</main>
+<script>
+var LEAGUES=[{id:"PL",name:"Premier League"},{id:"CL",name:"Champions League"},{id:"PD",name:"La Liga"}];
+var matches=[],filter="ALL",$=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function badge(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%360;
+ return '<span class="badge" style="background:hsl('+h+',52%,36%)">'+esc(n.replace(/[^A-Za-z]/g,"").slice(0,3).toUpperCase())+'</span>'}
+function hhmm(iso){return new Date(iso).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",hour12:false})}
+function lname(id){var l=LEAGUES.filter(function(x){return x.id===id})[0];return l?l.name:id}
+function hlUrl(m){return "https://www.youtube.com/results?search_query="+encodeURIComponent(m.home+" vs "+m.away+" highlights")}
+function countdown(iso){var d=new Date(iso)-new Date();if(d<=0)return "Starting now";var h=Math.floor(d/36e5),m=Math.floor(d%36e5/6e4);return "Kicks off in "+(h?h+"h ":"")+m+"m"}
+function tabs(){$("tabs").innerHTML=[{id:"ALL",name:"All"}].concat(LEAGUES).map(function(l){return '<button data-id="'+l.id+'" aria-pressed="'+(filter===l.id)+'">'+l.name+'</button>'}).join("")}
+function hero(){
+ if(!matches.length){$("hero").innerHTML='<p class="sub">No featured match right now.</p>';return}
+ var byT=matches.slice().sort(function(a,b){return new Date(a.kickoff)-new Date(b.kickoff)});
+ var m=byT.filter(function(x){return x.status==="LIVE"})[0]||byT.filter(function(x){return x.status==="NS"})[0]||byT[byT.length-1];
+ var live=m.status==="LIVE",ns=m.status==="NS";
+ var k=live?"Live now":(ns?"Next up":"Full time");
+ var mid=ns?hhmm(m.kickoff):(m.homeScore==null?0:m.homeScore)+" – "+(m.awayScore==null?0:m.awayScore);
+ var sub=ns?countdown(m.kickoff):(live?"In play":"Match finished");
+ $("hero").innerHTML='<span class="kicker'+(live?" live":"")+'">'+k+' · '+esc(lname(m.league))+'</span>'
+  +'<div class="hteams"><div class="hteam">'+badge(m.home)+esc(m.home)+'</div><div class="hmid'+(ns?" ns":"")+'">'+mid+'</div><div class="hteam">'+badge(m.away)+esc(m.away)+'</div></div>'
+  +'<div class="sub">'+sub+'</div>'
+  +(m.status==="FT"?'<p><a class="hl" href="'+hlUrl(m)+'" target="_blank" rel="noopener">▶ Watch highlights</a></p>':'');
+}
+function render(){
+ var out="";
+ LEAGUES.forEach(function(l){
+  if(filter!=="ALL"&&filter!==l.id)return;
+  var ms=matches.filter(function(m){return m.league===l.id}).sort(function(a,b){return new Date(a.kickoff)-new Date(b.kickoff)});
+  if(!ms.length)return;
+  out+='<section class="league"><h2>'+l.name+'</h2>';
+  ms.forEach(function(m){
+   var live=m.status==="LIVE",ns=m.status==="NS";
+   var sc=ns?"v":(m.homeScore==null?0:m.homeScore)+" – "+(m.awayScore==null?0:m.awayScore);
+   out+='<div class="match"><span class="status'+(live?" live":"")+'">'+(live?"Live":(ns?hhmm(m.kickoff):"FT"))+'</span>'
+    +'<span class="team home">'+badge(m.home)+'<span class="n">'+esc(m.home)+'</span></span>'
+    +'<span class="score'+(ns?" ns":"")+'">'+sc+'</span>'
+    +'<span class="team">'+badge(m.away)+'<span class="n">'+esc(m.away)+'</span></span>'
+    +(m.status==="FT"?'<div class="hlrow"><a class="hl" href="'+hlUrl(m)+'" target="_blank" rel="noopener">▶ Watch highlights</a></div>':'')+'</div>';
+  });
+  out+='</section>';
+ });
+ $("list").innerHTML=out||'<p class="msg">No matches in this league today or tomorrow.</p>';
+}
+function load(){
+ fetch("/api/matches").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+  matches=d.matches||[];hero();render();
+  $("note").textContent="Free-plan scores can run a few minutes behind. Updated "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+".";
+ }).catch(function(){if(!matches.length){$("hero").innerHTML='<p class="sub">Could not load matches.</p>';$("list").innerHTML='<p class="msg">Check your connection and try again.</p>'}});
+}
+$("tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;filter=b.dataset.id;tabs();render()});
+$("date").textContent=new Date().toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+tabs();load();setInterval(load,60000);setInterval(function(){if(matches.length)hero()},30000);
+</script>
+</body>
+</html>
+
